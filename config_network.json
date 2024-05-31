@@ -1,0 +1,19 @@
+{
+  "REPO_PATH": "/root/PycharmProjects",
+  "GIT_URL": "git@github.com:yangyinhua994/test.git",
+  "MVN_PATH": "C:\\Program Files\\Apache\\Maven\\apache-maven-3.9.7\\bin\\mvn.cmd",
+  "IP": "116.63.165.127",
+  "BRANCH_NAME": "main",
+  "INSPECTION_INTERVAL": 5,
+  "APP_RUN_PORT": 7070,
+  "RUN_APP_COMMANDS": [
+    [
+      "git",
+      "pull"
+    ],
+    [
+      "python3",
+      "test.py"
+    ]
+  ]
+}
