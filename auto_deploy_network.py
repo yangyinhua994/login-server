@@ -11,7 +11,7 @@ import json
 
 app = Flask(__name__)
 pids = []
-IS_CLONE_CODE = False
+IS_CLONE_CODE = True
 
 
 def stop_current_process():
@@ -129,19 +129,19 @@ if __name__ == '__main__':
         print(f"解析config_network.json出错，请检查config_network.json是否存在或格式是否有误: {e}")
     REPO_NAME = GIT_URL.split("/")[-1].replace(".git", "")
     REPO_PATH = os.path.join(REPO_PATH, REPO_NAME)
-    if os.path.exists(REPO_PATH):
-        remove_dir(REPO_PATH)
-    try:
-        os.makedirs(REPO_PATH)
-        os.chdir(REPO_PATH)
-        print("正在拉取代码...")
-        git.Repo.clone_from(GIT_URL, REPO_PATH)
-        repo = git.Repo(REPO_PATH)
-    except Exception as e:
-        print(f'克隆代码仓库时出错: {e}')
-        remove_dir(REPO_PATH)
-        exit(1)
-
+    if IS_CLONE_CODE:
+        if os.path.exists(REPO_PATH):
+            remove_dir(REPO_PATH)
+        try:
+            os.makedirs(REPO_PATH)
+            os.chdir(REPO_PATH)
+            print("正在拉取代码...")
+            git.Repo.clone_from(GIT_URL, REPO_PATH)
+        except Exception as e:
+            print(f'克隆代码仓库时出错: {e}')
+            remove_dir(REPO_PATH)
+            exit(1)
+    repo = git.Repo(REPO_PATH)
     try:
         repo.git.pull(REMOTE_NAME, BRANCH_NAME)
         stop_current_process()
