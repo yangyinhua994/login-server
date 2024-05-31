@@ -46,7 +46,7 @@ def run_commands():
     stop_current_process()
     for command in RUN_APP_COMMANDS:
         if "java" in command:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='gbk')
+            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             pid = process.pid
             print(f"运行命令 {' '.join(command)}，PID: {pid}")
 
@@ -57,7 +57,7 @@ def run_commands():
             output_thread = threading.Thread(target=print_output, args=(process,))
             output_thread.start()
         else:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='gbk')
+            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             pid = process.pid
             print(f"运行命令 {' '.join(command)}，PID: {pid}")
 
