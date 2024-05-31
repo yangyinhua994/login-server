@@ -11,7 +11,7 @@ import json
 
 app = Flask(__name__)
 pids = []
-IS_CLONE_CODE = False
+IS_CLONE_CODE = True
 
 
 def stop_current_process():
