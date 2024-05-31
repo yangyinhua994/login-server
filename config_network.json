@@ -8,12 +8,18 @@
   "APP_RUN_PORT": 7070,
   "RUN_APP_COMMANDS": [
     [
-      "git",
-      "pull"
+      "mvn",
+      "clean",
+      "install"
     ],
     [
-      "python3",
-      "test.py"
+      "mvn",
+      "package"
+    ],
+    [
+      "java",
+      "-jar",
+      "target/login-server-2.6.1.jar"
     ]
   ]
 }
