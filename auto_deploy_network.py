@@ -57,9 +57,9 @@ def run_commands():
 
         output_thread = threading.Thread(target=print_output, args=(process,))
         output_thread.start()
-        if "java" in command:
-            process.wait()
-            output_thread.join()
+        # if "java" in command:
+        #     process.wait()
+        #     output_thread.join()
         pids.append(pid)
     print("所有命令运行完成")
 
