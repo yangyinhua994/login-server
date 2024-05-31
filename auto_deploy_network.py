@@ -46,7 +46,8 @@ def run_commands():
     global pids
     stop_current_process()
     for command in RUN_APP_COMMANDS:
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1,
+                                   universal_newlines=True)
         pid = process.pid
         print(f"运行命令 {' '.join(command)}，PID: {pid}")
 
@@ -123,10 +124,9 @@ if __name__ == '__main__':
     repo = git.Repo(REPO_PATH)
     try:
         repo.git.pull(REMOTE_NAME, BRANCH_NAME)
-        stop_current_process()
-        run_commands()
     except Exception as e:
         print(f'初次启动时拉取代码出错: {e}')
+    run_commands()
 
     atexit.register(on_exit)
 
