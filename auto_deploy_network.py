@@ -42,45 +42,24 @@ def get_pid_by_port(port):
             return conn.pid
 
 
-def run_commands():
+def run_commands(commands):
+    global pids
     stop_current_process()
-    for command in RUN_APP_COMMANDS:
+    for command in commands:
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        pid = process.pid
+        print(f"运行命令 {' '.join(command)}，PID: {pid}")
+
+        def print_output(proc):
+            for line in iter(proc.stdout.readline, ''):
+                print(line.strip())
+
+        output_thread = threading.Thread(target=print_output, args=(process,))
+        output_thread.start()
         if "java" in command:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            pid = process.pid
-            print(f"运行命令 {' '.join(command)}，PID: {pid}")
-
-            def print_output(proc):
-                for line in iter(proc.stdout.readline, ''):
-                    print(line.strip())
-
-            output_thread = threading.Thread(target=print_output, args=(process,))
-            output_thread.start()
-        else:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            pid = process.pid
-            print(f"运行命令 {' '.join(command)}，PID: {pid}")
-
-            def print_output(proc):
-                for line in iter(proc.stdout.readline, b''):
-                    try:
-                        # 尝试使用 utf-8 解码
-                        decoded_line = line.decode('utf-8').strip()
-                        print(decoded_line)
-                    except UnicodeDecodeError:
-                        try:
-                            # 如果 utf-8 解码失败，尝试使用 gbk 解码
-                            decoded_line = line.decode('gbk').strip()
-                            print(decoded_line)
-                        except UnicodeDecodeError as e:
-                            # 如果仍然失败，打印原始字节数据
-                            print(f"解码错误: {e}, 原始输出: {line}")
-
-            output_thread = threading.Thread(target=print_output, args=(process,))
-            output_thread.start()
-            return process.pid
+            process.wait()
+            output_thread.join()
         pids.append(pid)
-
     print("所有命令运行完成")
 
 
