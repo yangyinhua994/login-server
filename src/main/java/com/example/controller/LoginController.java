@@ -63,7 +63,7 @@ public class LoginController {
 
     }
 
-    @GetMapping("/test2")
+    @GetMapping("/test1")
     public String test(){
         return "test";
     }
