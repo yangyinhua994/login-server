@@ -43,44 +43,24 @@ def get_pid_by_port(port):
 
 
 def run_commands():
+    global pids
     stop_current_process()
     for command in RUN_APP_COMMANDS:
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1,
+                                   universal_newlines=True)
+        pid = process.pid
+        print(f"运行命令 {' '.join(command)}，PID: {pid}")
+
+        def print_output(proc):
+            for line in iter(proc.stdout.readline, ''):
+                print(line.strip())
+
+        output_thread = threading.Thread(target=print_output, args=(process,))
+        output_thread.start()
         if "java" in command:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='gbk')
-            pid = process.pid
-            print(f"运行命令 {' '.join(command)}，PID: {pid}")
-
-            def print_output(proc):
-                for line in iter(proc.stdout.readline, ''):
-                    print(line.strip())
-
-            output_thread = threading.Thread(target=print_output, args=(process,))
-            output_thread.start()
-        else:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='gbk')
-            pid = process.pid
-            print(f"运行命令 {' '.join(command)}，PID: {pid}")
-
-            def print_output(proc):
-                for line in iter(proc.stdout.readline, b''):
-                    try:
-                        # 尝试使用 utf-8 解码
-                        decoded_line = line.decode('utf-8').strip()
-                        print(decoded_line)
-                    except UnicodeDecodeError:
-                        try:
-                            # 如果 utf-8 解码失败，尝试使用 gbk 解码
-                            decoded_line = line.decode('gbk').strip()
-                            print(decoded_line)
-                        except UnicodeDecodeError as e:
-                            # 如果仍然失败，打印原始字节数据
-                            print(f"解码错误: {e}, 原始输出: {line}")
-
-            output_thread = threading.Thread(target=print_output, args=(process,))
-            output_thread.start()
-            return process.pid
+            process.wait()
+            output_thread.join()
         pids.append(pid)
-
     print("所有命令运行完成")
 
 
@@ -144,10 +124,9 @@ if __name__ == '__main__':
     repo = git.Repo(REPO_PATH)
     try:
         repo.git.pull(REMOTE_NAME, BRANCH_NAME)
-        stop_current_process()
-        run_commands()
     except Exception as e:
         print(f'初次启动时拉取代码出错: {e}')
+    run_commands()
 
     atexit.register(on_exit)
 
