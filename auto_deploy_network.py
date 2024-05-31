@@ -42,10 +42,10 @@ def get_pid_by_port(port):
             return conn.pid
 
 
-def run_commands(commands):
+def run_commands():
     global pids
     stop_current_process()
-    for command in commands:
+    for command in RUN_APP_COMMANDS:
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         pid = process.pid
         print(f"运行命令 {' '.join(command)}，PID: {pid}")
