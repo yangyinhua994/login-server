@@ -5,7 +5,7 @@
   "IP": "116.63.165.127",
   "BRANCH_NAME": "main",
   "INSPECTION_INTERVAL": 5,
-  "APP_RUN_PORT": 7070,
+  "APP_RUN_PORT": 6060,
   "RUN_APP_COMMANDS": [
     [
       "mvn",
